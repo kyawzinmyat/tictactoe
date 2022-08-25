@@ -138,7 +138,7 @@ def minimax(board):
         if player(board) == X:
             print(X)
             for action in actions(board):
-                n_value = Min(result(board, action))
+                n_value = Min(result(board, action), 0)
                 if n_value > value:
                     value = n_value
                     o_action = action
@@ -146,7 +146,7 @@ def minimax(board):
         if player(board) == O:
             print(O)
             for action in actions(board):
-                n_value = Max(result(board, action))
+                n_value = Max(result(board, action), 0)
                 if n_value < value:
                     value = n_value
                     o_action = action
@@ -156,13 +156,13 @@ def minimax(board):
         return o_action
 
 
-def Max(board, alpha = -math.inf, beta = math.inf):
+def Max(board, depth, alpha = -math.inf, beta = math.inf):
     global steps
     steps += 1
     if not terminal(board):
         value = -math.inf
         for action in actions(board):
-            new_value = Min(result(board, action), alpha, beta)
+            new_value = Min(result(board, action), depth + 1, alpha, beta) + depth
             if value < new_value:
                 value = new_value
                 alpha = new_value
@@ -171,13 +171,13 @@ def Max(board, alpha = -math.inf, beta = math.inf):
         return value
     return utility(board)
 
-def Min(board, alpha = -math.inf, beta = math.inf):
+def Min(board, depth, alpha = -math.inf, beta = math.inf):
     global steps
     steps += 1
     if not terminal(board):
         value = math.inf
         for action in actions(board):
-            new_value = Max(result(board, action), alpha, beta)
+            new_value = Max(result(board, action), depth, alpha, beta) - depth
             if value > new_value:
                 value = new_value
                 beta = new_value
