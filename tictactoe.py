@@ -11,6 +11,9 @@ O = "O"
 EMPTY = None
 
 
+steps = 0
+
+
 def initial_state():
     """
     Returns starting state of the board.
@@ -133,6 +136,7 @@ def minimax(board):
         o_action = None
         value = -math.inf
         if player(board) == X:
+            print(X)
             for action in actions(board):
                 n_value = Min(result(board, action))
                 if n_value > value:
@@ -140,27 +144,45 @@ def minimax(board):
                     o_action = action
         value = math.inf
         if player(board) == O:
+            print(O)
             for action in actions(board):
                 n_value = Max(result(board, action))
                 if n_value < value:
                     value = n_value
                     o_action = action
+        global steps
+        print("Total steps ", steps)
+        steps = 0
         return o_action
 
 
-def Max(board):
+def Max(board, alpha = -math.inf, beta = math.inf):
+    global steps
+    steps += 1
     if not terminal(board):
         value = -math.inf
         for action in actions(board):
-            value = max(value, Min(result(board, action)))
+            new_value = Min(result(board, action), alpha, beta)
+            if value < new_value:
+                value = new_value
+                alpha = new_value
+            if beta < value:
+                return value
         return value
     return utility(board)
 
-def Min(board):
+def Min(board, alpha = -math.inf, beta = math.inf):
+    global steps
+    steps += 1
     if not terminal(board):
         value = math.inf
         for action in actions(board):
-            value = min(value, Max(result(board, action)))
+            new_value = Max(result(board, action), alpha, beta)
+            if value > new_value:
+                value = new_value
+                beta = new_value
+            if alpha > value:
+                return value
         return value
     return utility(board)
 
